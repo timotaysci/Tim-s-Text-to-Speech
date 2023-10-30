@@ -10,12 +10,8 @@
             <input type="text" name="text" placeholder="Enter text" required>
             <input type="submit" value="Convert to Speech">
         </form>
-        
-        <h2>File List</h2>
-        <ul>
-            {% for blob in blobs %}
-            <li><a href="{{ blob }}" target="_blank">{{ blob }}</a></li>
-            {% endfor %}
-        </ul>
+        <div>
+            <p>Text entered by the user in catalan: {{ user_text }}</p>
+        </div>
     </body>
 </html>
