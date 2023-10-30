@@ -27,7 +27,6 @@ speech_config.speech_synthesis_voice_name='ca-ES-EnricNeural'
 
 # Get text from the console and synthesize to the default speaker.
 text = 'Hello, World!' 
-
 speech_synthesis_result = speech_synthesizer.speak_text_async(text).get()
 
 if speech_synthesis_result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
