@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Text to Speech Web App</title>
+    </head>
+    <body>
+        <h1>Text to Speech Web App</h1>
+        
+        <form method="POST">
+            <input type="text" name="text" placeholder="Enter text" required>
+            <input type="submit" value="Convert to Speech">
+        </form>
+        
+        <h2>File List</h2>
+        <ul>
+            {% for blob in blobs %}
+            <li><a href="{{ blob }}" target="_blank">{{ blob }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
