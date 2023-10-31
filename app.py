@@ -14,19 +14,12 @@ from azure.storage.blob import BlobServiceClient
 azure_cognitive_endpoint = config.azureend
 azure_cognitive_key = config.key1
 
-print(azure_cognitive_endpoint)
-
 
 # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
 speech_config = speechsdk.SpeechConfig(subscription= azure_cognitive_key, region='westeurope')
 audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
 
 speech_config.speech_synthesis_voice_name='ca-ES-EnricNeural'
-
-
-
-
-
 
 speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
 
@@ -43,6 +36,8 @@ def index():
 
         # Save user_text to Azure Blob Storage
         save_user_text_to_blob(user_text)
+        # send to tts
+        convert_text_to_speech_and_save(user_text)
 
     # Retrieve and display the last 10 saved items
     saved_items = get_last_10_saved_items()
@@ -74,19 +69,31 @@ def get_last_10_saved_items():
 
     return saved_items
 
+
+
+def convert_text_to_speech_and_save(user_text):
+    blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
+    container_name = "user-audio"  # Replace with your desired container name
+    container_client = blob_service_client.get_container_client(container_name)
+    blob_name = str(uuid.uuid4()) + ".wav"  # Generate a unique blob name with .wav extension
+
+    blob_client = container_client.get_blob_client(blob_name)
+
+    # Generate speech from user_text
+    result = speech_synthesizer.speak_text_async(user_text).get()
+    if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        # Save the synthesized audio to the Blob Storage
+        audio_data = result.audio_data
+        content_settings = None  # You can specify other content settings if needed
+        blob_client.upload_blob(audio_data, overwrite=True, content_settings=content_settings, content_type="audio/wav")
+        print("File saved successfully")
+    else:
+        print(f"Speech synthesis failed: {result.reason}")
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-'''
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    user_text = ''
-    if request.method == 'POST':
-        text = request.form['text']
-        user_text = translate.translate(text)
-    return render_template('index.html', user_text=user_text )
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-'''
