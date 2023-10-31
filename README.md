@@ -7,9 +7,13 @@
 ## Setup
 ### Virtual Environments
 ``pip install virtualenv``
+
 ``cd /path/to/project``
+
 ``virtualenv TTTS``
+
 ``source TTTS/bin/activate``
+
 ``pip install -r requirements.txt``
 
 
