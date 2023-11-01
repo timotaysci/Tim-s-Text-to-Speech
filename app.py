@@ -7,7 +7,7 @@ import config  # Import a custom configuration module
 import ttts_translate as translate
 import azure.cognitiveservices.speech as speechsdk
 from azure.storage.blob import BlobServiceClient
-
+from urllib.parse import quote
 # Create a Flask application
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def index():
 
         # Save the translated text to Azure Blob Storage
         save_user_text_to_blob(user_text)
-        
+
         # Convert the translated text to speech and save the speech audio to Azure Blob Storage
         convert_text_to_speech_and_save(user_text)
 
@@ -54,6 +54,7 @@ def save_user_text_to_blob(user_text):
     blob_client.upload_blob(user_text, overwrite=True)
 
 # Function to retrieve and return the last 10 saved items from Azure Blob Storage
+
 def get_last_10_saved_items():
     blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
     container_name = "user-texts"  # Replace with your container name
@@ -67,9 +68,15 @@ def get_last_10_saved_items():
         blob_client = container_client.get_blob_client(blob.name)
         blob_content = blob_client.download_blob()
         saved_text = blob_content.content_as_text()
-        saved_items.append(saved_text)
+
+        # Create a blob URL for the corresponding audio blob
+        audio_blob_url = get_audio_blob_url(blob.name.replace(".txt", ".wav"))
+
+        saved_items.append({'text': saved_text, 'audio_blob_url': audio_blob_url})
 
     return saved_items
+
+
 
 # Function to convert user-generated text to speech and save it to Azure Blob Storage
 def convert_text_to_speech_and_save(user_text):
@@ -90,6 +97,18 @@ def convert_text_to_speech_and_save(user_text):
         print("File saved successfully")
     else:
         print(f"Speech synthesis failed: {result.reason}")
+
+def get_audio_blob_url(audio_blob_name):
+    blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
+    container_name = "user-audio"  # Replace with your container name
+    container_client = blob_service_client.get_container_client(container_name)
+    blob_client = container_client.get_blob_client(audio_blob_name)
+
+    # Get the URL for the audio blob
+    audio_blob_url = blob_client.url
+    return audio_blob_url
+
+
 
 # Start the Flask application if this script is executed
 if __name__ == '__main__':

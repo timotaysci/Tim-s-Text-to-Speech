@@ -17,6 +17,18 @@
         <div>
             <p>Last 10 translations: {{ saved_items}}</p>
 
+            <h2>Last 10 Translations</h2>
+            <ul>
+                {% for item in saved_items %}
+                <li>
+                    <p>{{ item.text }} {{input_text}}</p>
+                    <audio controls>
+                        <source src="{{ item.audio_blob_url }}" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </li>
+                {% endfor %}
+            </ul>
 
 
         </div>
