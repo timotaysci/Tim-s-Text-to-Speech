@@ -1,5 +1,7 @@
 # Tim's Text to Speech (TTTS)
 
+![logo](g13588.png)
+
 Tim's Text to Speech (TTTS) is a Python web application designed to help users communicate more effectively with individuals who speak Catalan. The application leverages various Azure services, including Azure Cognitive Services for text translation and text-to-speech conversion, and Azure Blob Storage for storing and managing user-generated content. This README provides an overview of the application's functionality, its key components, and how to set it up for your own use.
 
 ## Main Features
