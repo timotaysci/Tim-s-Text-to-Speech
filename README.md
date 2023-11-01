@@ -49,7 +49,7 @@ To set up TTTS for your use, follow these steps:
 
 ## Contributing
 
-Feel free to contribute to the development of TTTS by submitting pull requests or reporting issues. You can find the source code on [GitHub](https://github.com/your-repository-link).
+Feel free to contribute to the development of TTTS by submitting pull requests or reporting issues. You can find the source code on GitHub.
 
 ## License
 
